@@ -2,6 +2,32 @@
 <html lang="zh-tw">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyDgYt-CXYd_DArVPs6yY6P7LaO3zYC4MhI",
+            authDomain: "nkust-first-hackthon.firebaseapp.com",
+            databaseURL: "https://nkust-first-hackthon.firebaseio.com",
+            projectId: "nkust-first-hackthon",
+            storageBucket: "nkust-first-hackthon.appspot.com",
+            messagingSenderId: "143535285410"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <!-- Leave out Storage -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-storage.js"></script> -->
+    <script>
+        // Get a reference to the database service
+        var db = firebase.database();
+    </script>
+
+    <!-- Chart JS -->
+    <script src="./js/Chart.min.js"></script>
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -15,34 +41,98 @@
     <title>自動澆灌系統 植物點滴</title>
 </head>
 
-<body class="container-fluid text-center">
+<body class="container-fluid text-center m-3">
     <div class="row">
         <div class="col mx-auto m-5">
-            <h2>自動澆灌系統 植物點滴</h2>
+            <h2>水量及時監控面板</h2>
         </div>
     </div>
     <div class="row">
-        <div class="col-3 img-fluid mx-auto">
-            <object type="image/svg+xml" data="./pic/logo.svg"></object>
+        <div class="col-md-3 mx-auto mb-5">
+            <h3>第1組</h3>
+            <canvas id="myChart" width="500" height="500" class="img-fluid"></canvas>
+            <div class="row">
+                <div class="col-md">
+                    <h3>更新時間</h3>
+                </div>
+                <div class="col-md text-success">
+                    <h3 id="update_time">2018-05-06 09:00</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mx-auto mb-5">
+            <h3>第2組</h3>
+            <canvas id="myChart2" width="500" height="500" class="img-fluid"></canvas>
+            <div class="row">
+                <div class="col-md">
+                    <h3>更新時間</h3>
+                </div>
+                <div class="col-md text-success">
+                    <h3 id="update_time2">2018-05-06 09:00</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mx-auto mb-5">
+            <h3>第3組</h3>
+            <canvas id="myChart3" width="500" height="500" class="img-fluid"></canvas>
+            <div class="row">
+                <div class="col-md">
+                    <h3>更新時間</h3>
+                </div>
+                <div class="col-md text-success">
+                    <h3 id="update_time3">2018-05-06 09:00</h3>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col mx-auto m-5">
-            <a href="https://developer.mozilla.org/en-US/docs/SVG">
-                <button type="button" class="btn btn-primary">點我進入</button>
-            </a>
-        </div>
-    </div>
-
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-        crossorigin="anonymous"></script>
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/popper.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/machineChart.js"></script>
+    <script type="text/javascript">
+        function doPoll() {
+
+            $.get('https://nkust-first-hackthon.firebaseio.com/1.json', function (data) {
+
+                console.log(data);
+                myChart.data.datasets[0].data[0] = parseInt(data.water_level);
+                myChart.data.datasets[0].data[1] = 100 - myChart.data.datasets[0].data[0];
+                myChart.update();
+                $("#update_time").text(data.updated_time);
+
+            });
+            $.get('https://nkust-first-hackthon.firebaseio.com/2.json', function (data) {
+
+                console.log(data);
+                myChart2.data.datasets[0].data[0] = parseInt(data.water_level);
+                myChart2.data.datasets[0].data[1] = 100 - myChart2.data.datasets[0].data[0];
+                myChart2.update();
+                $("#update_time2").text(data.updated_time);
+
+            });
+            $.get('https://nkust-first-hackthon.firebaseio.com/3.json', function (data) {
+
+                console.log(data);
+                myChart3.data.datasets[0].data[0] = parseInt(data.water_level);
+                myChart3.data.datasets[0].data[1] = 100 - myChart3.data.datasets[0].data[0];
+                myChart3.update();
+                $("#update_time3").text(data.updated_time);
+
+            });
+            setTimeout(doPoll, 2000);
+        }
+        doPoll();
+    </script>
+    <script type="text/javascript">
+        $(document).keypress(function (e) {
+            if ((e.keyCode || e.which) == 13) {
+                // Enter key pressed
+                window.location = "keyin.html";
+            }
+        });
+    </script>
 </body>
 
 </html>
