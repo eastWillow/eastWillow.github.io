@@ -153,6 +153,7 @@
                 "water_level": "10"
             };
             data.updated_time = moment().format('YYYY-MM-DD h:mm:ss');
+            $("#update_time").text(data.updated_time);
             data.water_level = this.value;
             $.ajax({
                 url: 'https://nkust-first-hackthon.firebaseio.com/1.json',
@@ -176,6 +177,7 @@
                 "water_level": "10"
             };
             data.updated_time = moment().format('YYYY-MM-DD h:mm:ss');
+            $("#update_time2").text(data.updated_time);
             data.water_level = this.value;
             $.ajax({
                 url: 'https://nkust-first-hackthon.firebaseio.com/2.json',
@@ -199,6 +201,7 @@
                 "water_level": "10"
             };
             data.updated_time = moment().format('YYYY-MM-DD h:mm:ss');
+            $("#update_time3").text(data.updated_time);
             data.water_level = this.value;
             $.ajax({
                 url: 'https://nkust-first-hackthon.firebaseio.com/3.json',
