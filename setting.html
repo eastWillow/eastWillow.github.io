@@ -38,30 +38,30 @@
     <script src="./js/jquery-3.2.1.min.js"></script>
     <script src="./js/popper.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/moment.js"></script>
     <script>
         $.get('https://nkust-first-hackthon.firebaseio.com/1.json', function (data) {
-            debugData = data;
             console.log(data);
             $("#myRange").attr({
                 "value": data.water_level
-            })
+            });
+            $("#update_time").text(data.updated_time);
 
         });
         $.get('https://nkust-first-hackthon.firebaseio.com/2.json', function (data) {
-
             console.log(data);
             $("#myRange2").attr({
                 "value": data.water_level
-            })
+            });
+            $("#update_time2").text(data.updated_time);
 
         });
         $.get('https://nkust-first-hackthon.firebaseio.com/3.json', function (data) {
-
             console.log(data);
             $("#myRange3").attr({
                 "value": data.water_level
-            })
-
+            });
+            $("#update_time3").text(data.updated_time);
         });
     </script>
     <title>自動澆灌系統 植物點滴</title>
@@ -152,7 +152,7 @@
                 "updated_time": "2018-05-06 06:15",
                 "water_level": "10"
             };
-            data.updated_time = new Date().toDateString();
+            data.updated_time = moment().format('YYYY-MM-DD h:mm:ss');
             data.water_level = this.value;
             $.ajax({
                 url: 'https://nkust-first-hackthon.firebaseio.com/1.json',
@@ -175,7 +175,7 @@
                 "updated_time": "2018-05-06 06:15",
                 "water_level": "10"
             };
-            data.updated_time = new Date().toDateString();
+            data.updated_time = moment().format('YYYY-MM-DD h:mm:ss');
             data.water_level = this.value;
             $.ajax({
                 url: 'https://nkust-first-hackthon.firebaseio.com/2.json',
@@ -198,7 +198,7 @@
                 "updated_time": "2018-05-06 06:15",
                 "water_level": "10"
             };
-            data.updated_time = new Date().toDateString();
+            data.updated_time = moment().format('YYYY-MM-DD h:mm:ss');
             data.water_level = this.value;
             $.ajax({
                 url: 'https://nkust-first-hackthon.firebaseio.com/3.json',
