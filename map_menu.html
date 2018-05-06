@@ -4,7 +4,24 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+           * element that contains the map. */
 
+        #map {
+            height: 100%;
+        }
+
+        #map-canvas {
+            height: 100%;
+            width: 100%;
+        }
+
+        .container-map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
     <script>
         // Initialize Firebase
@@ -68,13 +85,12 @@
     </nav>
 
     <div class="row mt-3">
-        <div class="col mx-auto m-5">
+        <div class="col m-5">
             <h2>地圖顯示總覽</h2>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3 mx-auto mb-5">
-
+        <div class="col-md-9 mx-auto mb-5" style="height: calc(80vh - 50px);" id="map">
         </div>
     </div>
     <!-- Optional JavaScript -->
@@ -82,8 +98,89 @@
     <script src="./js/jquery-3.2.1.min.js"></script>
     <script src="./js/popper.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/machineChart.js"></script>
-    <script type="text/javascript">
+    <script>
+        // If you're adding a number of markers, you may want to drop them on the map
+        // consecutively rather than all at once. This example shows how to use
+        // window.setTimeout() to space your markers' animation.
+
+        var neighborhoods = [{
+                lat: 22.757,
+                lng: 120.335
+            },
+            {
+                lat: 22.756,
+                lng: 120.337
+            },
+            {
+                lat: 22.758,
+                lng: 120.338
+            },
+            {
+                lat: 22.7565,
+                lng: 120.340
+            },
+            {
+                lat: 22.754,
+                lng: 120.330
+            },
+            {
+                lat: 22.753,
+                lng: 120.333
+            },
+            {
+                lat: 22.752,
+                lng: 120.330
+            },
+            {
+                lat: 22.754,
+                lng: 120.332
+            }
+        ];
+
+        var markers = [];
+        var map;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: 22.754,
+                    lng: 120.334
+                },
+                zoom: 16
+            });
+        }
+
+        function drop() {
+            clearMarkers();
+            for (var i = 0; i < neighborhoods.length; i++) {
+                addMarkerWithTimeout(neighborhoods[i], i * 300);
+            }
+        }
+
+        function addMarkerWithTimeout(position, timeout) {
+            window.setTimeout(function () {
+                markers.push(new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    animation: google.maps.Animation.DROP
+                }));
+            }, timeout);
+        }
+
+        function clearMarkers() {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIuI7b4puQfWjykNwfhz1K598BaOJSwy4&callback=initMap" async
+        defer></script>
+
+    <script>
+        $(document).ready(function () {
+            window.setTimeout(drop, 1000);
+        });
     </script>
 </body>
 
