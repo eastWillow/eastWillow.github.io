@@ -25,9 +25,6 @@
         var db = firebase.database();
     </script>
 
-    <!-- Chart JS -->
-    <script src="./js/Chart.min.js"></script>
-
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -37,7 +34,36 @@
         crossorigin="anonymous">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanstc.css">
-    <link rel="stylesheet" href="./css/main_menu.css">
+    <link rel="stylesheet" href="./css/setting.css">
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/popper.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script>
+        $.get('https://nkust-first-hackthon.firebaseio.com/1.json', function (data) {
+            debugData = data;
+            console.log(data);
+            $("#myRange").attr({
+                "value": data.water_level
+            })
+
+        });
+        $.get('https://nkust-first-hackthon.firebaseio.com/2.json', function (data) {
+
+            console.log(data);
+            $("#myRange2").attr({
+                "value": data.water_level
+            })
+
+        });
+        $.get('https://nkust-first-hackthon.firebaseio.com/3.json', function (data) {
+
+            console.log(data);
+            $("#myRange3").attr({
+                "value": data.water_level
+            })
+
+        });
+    </script>
     <title>自動澆灌系統 植物點滴</title>
 </head>
 
@@ -46,7 +72,7 @@
         <a class="navbar-brand" href="./index.html">自動澆灌系統</a>
         <div class="navbar-collapse collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="./main_menu.html">水量總覽及時監控面板
                         <span class="sr-only">(current)</span>
                     </a>
@@ -55,7 +81,7 @@
                     <a class="nav-link" href="./map_menu.html">地圖顯示總覽</a>
                 </li>
             </ul>
-            <div class="mt-2 mt-md-0  active">
+            <div class="mt-2 mt-md-0">
                 <a class="navbar-brand" href="./setting.html">
                     <button class="btn btn-outline-success my-2 my-sm-0">後臺管理</button>
                 </a>
@@ -75,7 +101,9 @@
     <div class="row">
         <div class="col-md-3 mx-auto mb-5">
             <h3>第1組</h3>
-            <canvas id="myChart" width="500" height="500" class="img-fluid"></canvas>
+            <div class="slidecontainer">
+                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+            </div>
             <div class="row">
                 <div class="col-md">
                     <h3>更新時間</h3>
@@ -87,7 +115,9 @@
         </div>
         <div class="col-md-3 mx-auto mb-5">
             <h3>第2組</h3>
-            <canvas id="myChart2" width="500" height="500" class="img-fluid"></canvas>
+            <div class="slidecontainer">
+                <input type="range" min="1" max="100" value="50" class="slider" id="myRange2">
+            </div>
             <div class="row">
                 <div class="col-md">
                     <h3>更新時間</h3>
@@ -99,7 +129,9 @@
         </div>
         <div class="col-md-3 mx-auto mb-5">
             <h3>第3組</h3>
-            <canvas id="myChart3" width="500" height="500" class="img-fluid"></canvas>
+            <div class="slidecontainer">
+                <input type="range" min="1" max="100" value="50" class="slider" id="myRange3">
+            </div>
             <div class="row">
                 <div class="col-md">
                     <h3>更新時間</h3>
@@ -112,43 +144,77 @@
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="./js/jquery-3.2.1.min.js"></script>
-    <script src="./js/popper.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/machineChart.js"></script>
+
     <script type="text/javascript">
-        function doPoll() {
-
-            $.get('https://nkust-first-hackthon.firebaseio.com/1.json', function (data) {
-
-                console.log(data);
-                myChart.data.datasets[0].data[0] = parseInt(data.water_level);
-                myChart.data.datasets[0].data[1] = 100 - myChart.data.datasets[0].data[0];
-                myChart.update();
-                $("#update_time").text(data.updated_time);
-
+        var slider = document.getElementById("myRange");
+        slider.oninput = function () {
+            var data = {
+                "updated_time": "2018-05-06 06:15",
+                "water_level": "10"
+            };
+            data.updated_time = new Date().toDateString();
+            data.water_level = this.value;
+            $.ajax({
+                url: 'https://nkust-first-hackthon.firebaseio.com/1.json',
+                dataType: 'json',
+                type: 'patch',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "updated_time": data.updated_time,
+                    "water_level": data.water_level
+                }),
+                processData: false,
+                error: function (jqXhr, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
             });
-            $.get('https://nkust-first-hackthon.firebaseio.com/2.json', function (data) {
-
-                console.log(data);
-                myChart2.data.datasets[0].data[0] = parseInt(data.water_level);
-                myChart2.data.datasets[0].data[1] = 100 - myChart2.data.datasets[0].data[0];
-                myChart2.update();
-                $("#update_time2").text(data.updated_time);
-
-            });
-            $.get('https://nkust-first-hackthon.firebaseio.com/3.json', function (data) {
-
-                console.log(data);
-                myChart3.data.datasets[0].data[0] = parseInt(data.water_level);
-                myChart3.data.datasets[0].data[1] = 100 - myChart3.data.datasets[0].data[0];
-                myChart3.update();
-                $("#update_time3").text(data.updated_time);
-
-            });
-            setTimeout(doPoll, 2000);
         }
-        doPoll();
+        var slider = document.getElementById("myRange2");
+        slider.oninput = function () {
+            var data = {
+                "updated_time": "2018-05-06 06:15",
+                "water_level": "10"
+            };
+            data.updated_time = new Date().toDateString();
+            data.water_level = this.value;
+            $.ajax({
+                url: 'https://nkust-first-hackthon.firebaseio.com/2.json',
+                dataType: 'json',
+                type: 'patch',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "updated_time": data.updated_time,
+                    "water_level": data.water_level
+                }),
+                processData: false,
+                error: function (jqXhr, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+            });
+        }
+        var slider = document.getElementById("myRange3");
+        slider.oninput = function () {
+            var data = {
+                "updated_time": "2018-05-06 06:15",
+                "water_level": "10"
+            };
+            data.updated_time = new Date().toDateString();
+            data.water_level = this.value;
+            $.ajax({
+                url: 'https://nkust-first-hackthon.firebaseio.com/3.json',
+                dataType: 'json',
+                type: 'patch',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "updated_time": data.updated_time,
+                    "water_level": data.water_level
+                }),
+                processData: false,
+                error: function (jqXhr, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+            });
+        }
     </script>
 </body>
 
